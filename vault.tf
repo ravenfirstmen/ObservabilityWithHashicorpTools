@@ -57,10 +57,10 @@ EOT
     content_type = "text/x-shellscript-per-instance"
     content = templatefile("${path.module}/cloud-init/vault/setup_vault_server.sh.tpl",
       {
-        leader_tls_servername = local.vault_domain
-        node_name  = each.value.name
-        current_node_ip = each.value.ip
-        retry_join_ips         = [for s in local.vault_servers : s.ip]
+        leader_tls_servername   = local.vault_domain
+        node_name               = each.value.name
+        current_node_ip         = each.value.ip
+        retry_join_ips          = [for s in local.vault_servers : s.ip]
         vault_certificates_data = local.vault_certificates
     })
   }

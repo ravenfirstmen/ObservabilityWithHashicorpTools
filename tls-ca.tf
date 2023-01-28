@@ -36,8 +36,8 @@ resource "local_file" "ca_public_key" {
 
 locals {
   ca_certificate_data = {
-    cert     = base64encode(tls_self_signed_cert.ca_cert.cert_pem)
-    key   = base64encode(tls_private_key.ca_key.private_key_pem)
+    cert = base64encode(tls_self_signed_cert.ca_cert.cert_pem)
+    key  = base64encode(tls_private_key.ca_key.private_key_pem)
   }
 }
 

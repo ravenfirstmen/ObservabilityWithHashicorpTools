@@ -121,8 +121,8 @@ provider "grafana" {
 }
 
 resource "grafana_data_source" "prometheus" {
-  type                = "prometheus"
-  name                = "Prometheus"
+  type = "prometheus"
+  name = "Prometheus"
   url  = "http://${local.prometheus_server.ip}:9090/"
   depends_on = [
     libvirt_domain.grafana_instance
@@ -130,10 +130,10 @@ resource "grafana_data_source" "prometheus" {
 }
 
 resource "grafana_data_source" "loki" {
-  type                = "loki"
-  name                = "Loki"
+  type = "loki"
+  name = "Loki"
   url  = "http://${local.loki_server.ip}:3100/"
   depends_on = [
     libvirt_domain.grafana_instance
-  ]  
+  ]
 }

@@ -47,7 +47,7 @@ resource "tls_locally_signed_cert" "vault_cluster_server_signed_cert" {
 
 resource "local_file" "vault_private_key" {
   content         = tls_private_key.vault_cluster_server_key.private_key_pem
-   filename        = "./certs/vault-cert-key.pem"
+  filename        = "./certs/vault-cert-key.pem"
   file_permission = "0600"
 }
 
@@ -60,9 +60,9 @@ resource "local_file" "vault_public_key" {
 
 locals {
   vault_certificates_data = {
-    vault_ca     = base64encode(tls_self_signed_cert.ca_cert.cert_pem)
-    vault_cert   = base64encode(tls_locally_signed_cert.vault_cluster_server_signed_cert.cert_pem)
-    vault_pk     = base64encode(tls_private_key.vault_cluster_server_key.private_key_pem)
+    vault_ca   = base64encode(tls_self_signed_cert.ca_cert.cert_pem)
+    vault_cert = base64encode(tls_locally_signed_cert.vault_cluster_server_signed_cert.cert_pem)
+    vault_pk   = base64encode(tls_private_key.vault_cluster_server_key.private_key_pem)
   }
 }
 
