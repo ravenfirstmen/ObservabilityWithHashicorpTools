@@ -33,24 +33,6 @@ ca_certs:
 EOT
   }
 
-  # part {
-  #   content_type = "text/x-shellscript-per-instance"
-  #   content = templatefile("${path.module}/cloud-init/consul/setup_consul_server.sh.tpl",
-  #     {
-  #       deployment_id          = random_uuid.deployment_id.result,
-  #       datacenter             = var.datacenter_name,
-  #       bootstrap_expect       = length(local.servers),
-  #       total_nodes            = length(local.servers),
-  #       gossip_key             = random_id.consul_gossip_encryption_key.b64_std,
-  #       master_token           = random_uuid.consul_master_token.result,
-  #       agent_server_token     = random_uuid.consul_agent_server_token.result,
-  #       snapshot_token         = random_uuid.consul_snapshot_token.result,
-  #       consul_cluster_version = var.consul_cluster_version,
-  #       acl_bootstrap_bool     = var.acl_bootstrap_bool,
-  #       retry_join_ips         = [for s in local.servers : s.ip]
-  #   })
-  # }
-
   part {
     content_type = "text/x-shellscript-per-instance"
     content      = templatefile("${path.module}/cloud-init/grafana-agent/setup_grafana.sh.tpl", {})
