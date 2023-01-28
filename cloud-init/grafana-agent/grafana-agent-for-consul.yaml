@@ -1,0 +1,82 @@
+server:
+  log_level: info
+
+metrics:
+  global:
+    scrape_interval: 15s
+    remote_write:
+      - url: http://${prometheus_endpoint}:9090/api/v1/write
+  wal_directory: /tmp/grafana-wal
+  configs:
+    - name: default
+      scrape_configs:
+        - job_name: grafana
+          static_configs:
+            - targets: ['localhost:9090']
+          relabel_configs:
+            - target_label: instance
+              replacement: "#MACHINE#"
+            - target_label: metrics
+              replacement: grafana
+            - target_label: role
+              replacement: ${role}
+              
+        - job_name: "consul"
+          static_configs:
+            - targets: ['localhost:8500']
+          relabel_configs:
+            - target_label: role
+              replacement: ${role}
+            - target_label: metrics
+              replacement: consul
+            - target_label: instance
+              replacement: "#MACHINE#"              
+          metrics_path: "/v1/agent/metrics"
+          params:
+            format: ['prometheus']
+            token: ['${consul_token}']
+
+integrations:
+  agent:
+    enabled: true
+  node_exporter:
+    enabled: true
+    # if we need to lower the number of samples and/or the cardinality set explicitly the collectors
+    # set_collectors:
+    #   - filesystem
+    #   - diskstats
+    #   - cpu
+    #   - meminfo
+    #   - loadavg
+    #   - uname
+    #   - processes
+    relabel_configs:
+      - target_label: job
+        replacement: machine
+      - target_label: instance
+        replacement: "#MACHINE#"
+      - target_label: node
+        replacement: "#MACHINE#"
+      - target_label: metrics
+        replacement: os
+      - target_label: role
+        replacement: ${role}
+
+# LOGS SECTION
+
+logs:
+  configs:
+  - name: default
+    positions:
+      filename: /tmp/grafana-log-positions.yaml
+    scrape_configs:
+      - job_name: varlogs
+        static_configs:
+          - targets: [localhost]
+            labels:
+              job: varlogs
+              role: ${role}
+              machine: "#MACHINE#"
+              __path__: /var/log/*log
+    clients:
+      - url: http://${loki_endpoint}:3100/loki/api/v1/push

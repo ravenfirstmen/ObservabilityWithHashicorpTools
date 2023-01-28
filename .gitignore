@@ -1,0 +1,4 @@
+.vscode/settings.json
+**/.terraform*
+**/terraform.*
+**/*.pem
