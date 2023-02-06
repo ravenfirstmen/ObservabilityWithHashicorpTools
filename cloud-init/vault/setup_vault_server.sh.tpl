@@ -30,6 +30,35 @@ disable_mlock = true
 cluster_addr = "https://$LOCAL_IPV4:8201"
 api_addr = "https://$LOCAL_IPV4:8200"
 
+%{~ if is_consul_backend_storage ~}
+
+storage "consul" {
+  token = "${vault_storage_backend_token}"
+  path = "${vault_kv_path}/"
+  address = "${consul_cluster_end_point}"
+  scheme = "https"
+  tls_key_file = "/opt/vault/tls/vault-key.pem"
+  tls_cert_file = "/opt/vault/tls/vault-cert.pem"
+  tls_ca_file = "/opt/vault/tls/vault-ca.pem"
+  tls_min_version = "tls12"
+  tls_skip_verify = "false"
+}
+
+service_registration "consul" {
+  token = "${vault_storage_backend_token}"
+  address = "${consul_cluster_end_point}"
+  scheme = "https"
+  service = "vault"
+  service_tags ="vault,vault-01"        
+  tls_key_file = "/opt/vault/tls/vault-key.pem"
+  tls_cert_file = "/opt/vault/tls/vault-cert.pem"
+  tls_ca_file = "/opt/vault/tls/vault-ca.pem"
+  tls_min_version = "tls12"
+  tls_skip_verify = "false"        
+}
+
+%{~ else ~}
+
 storage "raft" {
   path    = "/opt/vault/data"
   node_id = "${node_name}"
@@ -46,6 +75,8 @@ storage "raft" {
   %{~ endif ~}
   %{~ endfor ~}
 }
+
+%{~ endif ~}
 
 listener "tcp" {
   address            = "0.0.0.0:8200"

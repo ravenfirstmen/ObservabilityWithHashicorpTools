@@ -3,3 +3,4 @@
 **/terraform.*
 **/*.pem
 **/unseal-info.json
+**/.idea

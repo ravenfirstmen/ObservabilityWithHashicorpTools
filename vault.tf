@@ -62,6 +62,11 @@ EOT
         current_node_ip         = each.value.ip
         retry_join_ips          = [for s in local.vault_servers : s.ip]
         vault_certificates_data = local.vault_certificates
+
+        is_consul_backend_storage   = var.is_consul_vault_backend
+        vault_storage_backend_token = var.is_consul_vault_backend ? data.consul_acl_token_secret_id.vault_storage_backend[0].secret_id : null
+        vault_kv_path               = "vault"
+        consul_cluster_end_point    = "${local.consul_cluster_end_point}:8501"
     })
   }
 
@@ -119,7 +124,8 @@ resource "libvirt_domain" "vault-instance" {
   }
 
   depends_on = [
-    libvirt_cloudinit_disk.vault_cloudinit
+    libvirt_cloudinit_disk.vault_cloudinit,
+    libvirt_domain.consul-instance
   ]
 
   # lifecycle {
@@ -127,3 +133,65 @@ resource "libvirt_domain" "vault-instance" {
   # }
 }
 
+# Consul backend
+resource "consul_acl_policy" "vaul_storage_backend" {
+  count = var.is_consul_vault_backend ? 1 : 0
+
+  name        = "vaul-backend-policy"
+  description = "Backend access policy for the vault cluster"
+  rules       = <<-RULE
+    {
+        "key_prefix": {
+            "vault/": {
+            "policy": "write"
+            }
+        },
+        "service": {
+            "vault": {
+            "policy": "write"
+            }
+        },
+        "agent_prefix": {
+            "": {
+            "policy": "read"
+            }
+        },
+        "session_prefix": {
+            "": {
+            "policy": "write"
+            }
+        }
+    }
+    RULE
+  datacenters = [var.datacenter_name]
+
+  depends_on = [
+    libvirt_domain.consul-instance
+  ]  
+}
+
+resource "consul_acl_token" "vault_storage_backend" {
+  count = var.is_consul_vault_backend ? 1 : 0
+
+  description = "Backend access token for the vault cluster"
+  policies    = [consul_acl_policy.vaul_storage_backend[count.index].name]
+
+  depends_on = [
+    libvirt_domain.consul-instance
+  ]  
+}
+
+data "consul_acl_token_secret_id" "vault_storage_backend" {
+  count = var.is_consul_vault_backend ? 1 : 0
+
+  accessor_id = consul_acl_token.vault_storage_backend[count.index].id
+
+  depends_on = [
+    libvirt_domain.consul-instance
+  ]  
+}
+
+output "vault_storage_backend_token" {
+  value     = var.is_consul_vault_backend ? data.consul_acl_token_secret_id.vault_storage_backend[0].secret_id : null
+  sensitive = true
+}

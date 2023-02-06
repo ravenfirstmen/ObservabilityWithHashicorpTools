@@ -76,3 +76,8 @@ variable "acl_bootstrap_bool" {
   description = "Initial ACL Bootstrap configurations"
 }
 
+variable "is_consul_vault_backend" {
+  type        = bool
+  default     = false
+  description = "True if consul is vault backend"
+}
