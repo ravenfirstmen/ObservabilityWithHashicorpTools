@@ -92,8 +92,8 @@ resource "libvirt_domain" "vault-instance" {
 
   autostart = false
   name      = each.value.name
-  memory    = "4096"
-  vcpu      = 2
+  memory    = "2048"
+  vcpu      = 1
   machine   = "q35"
   xml { # para a q35 o cdrom necessita de ser sata
     xslt = file("lib-virt/q35-cdrom-model.xslt")

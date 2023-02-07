@@ -54,8 +54,8 @@ resource "libvirt_domain" "grafana_instance" {
 
   autostart = false
   name      = local.grafana_server.name
-  memory    = "4096"
-  vcpu      = 2
+  memory    = "2048"
+  vcpu      = 1
   machine   = "q35"
   xml { # para a q35 o cdrom necessita de ser sata
     xslt = file("lib-virt/q35-cdrom-model.xslt")
