@@ -60,6 +60,14 @@ output "mattermost-info" {
   }
 }
 
+
+output "keyclock-info" {
+  value = {
+    name    = local.keycloak_server.name
+    address = local.keycloak_server.ip
+  }
+}
+
 output "network_cidr" {
   value = var.network_cidr
 }
@@ -68,6 +76,11 @@ output "network_domain" {
 }
 output "network_name" {
   value = libvirt_network.observability_network.name
+}
+
+output "keycloak_password" {
+  value = random_password.keycloak_password.result
+  sensitive = true
 }
 
 output "etc_hosts" {

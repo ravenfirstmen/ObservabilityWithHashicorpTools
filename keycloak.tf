@@ -1,6 +1,11 @@
 resource "random_uuid" "keycloak_machine_id" {
 }
 
+resource "random_password" "keycloak_password" {
+  length           = 12
+  special          = false
+}
+
 data "template_cloudinit_config" "keycloak_config" {
   gzip          = false # does not work with NoCloud ds?!?
   base64_encode = false # does not work with NoCloud ds?!?
@@ -30,6 +35,13 @@ ca_certs:
   trusted:
     - |
       ${indent(6, tls_self_signed_cert.ca_cert.cert_pem)}
+
+write_files:
+  - encoding: b64
+    content: ${base64encode(templatefile("${path.module}/cloud-init/keycloak/credentials.env.tpl", { password = random_password.keycloak_password.result }))}
+    path: /etc/default/keycloak.env
+    owner: root:root
+    permissions: '0600'
 
 EOT
   }
