@@ -2,7 +2,7 @@
 
 source ./env.sh
 
-cat <<'EOF' | vault policy write Audit -
+cat <<'EOF' | vault policy write audit -
 path "sys/audit/*"
 {
   capabilities = ["create", "read", "update", "delete", "list", "sudo"]

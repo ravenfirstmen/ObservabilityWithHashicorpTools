@@ -1,3 +1,6 @@
+locals {
+  vault_kv_path = "vault-01"
+}
 
 resource "random_uuid" "vault_machine_id" {
   for_each = local.vault_servers
@@ -65,7 +68,7 @@ EOT
 
         is_consul_backend_storage   = var.is_consul_vault_backend
         vault_storage_backend_token = var.is_consul_vault_backend ? data.consul_acl_token_secret_id.vault_storage_backend[0].secret_id : null
-        vault_kv_path               = "vault"
+        vault_kv_path               = local.vault_kv_path
         consul_cluster_end_point    = "${local.consul_cluster_end_point}:8501"
     })
   }
@@ -140,34 +143,24 @@ resource "consul_acl_policy" "vaul_storage_backend" {
   name        = "vaul-backend-policy"
   description = "Backend access policy for the vault cluster"
   rules       = <<-RULE
-    {
-        "key_prefix": {
-            "vault/": {
-            "policy": "write"
-            }
-        },
-        "service": {
-            "vault": {
-            "policy": "write"
-            }
-        },
-        "agent_prefix": {
-            "": {
-            "policy": "read"
-            }
-        },
-        "session_prefix": {
-            "": {
-            "policy": "write"
-            }
-        }
+    service "${local.vault_kv_path}" {
+      policy = "write"
+    }
+    key_prefix "${local.vault_kv_path}/" {
+      policy = "write"
+    }
+    agent_prefix "${local.vault_kv_path}" {
+      policy = "read"
+    }
+    session_prefix "${local.vault_kv_path}" {
+      policy = "write"
     }
     RULE
   datacenters = [var.datacenter_name]
 
   depends_on = [
     libvirt_domain.consul-instance
-  ]  
+  ]
 }
 
 resource "consul_acl_token" "vault_storage_backend" {
@@ -178,7 +171,7 @@ resource "consul_acl_token" "vault_storage_backend" {
 
   depends_on = [
     libvirt_domain.consul-instance
-  ]  
+  ]
 }
 
 data "consul_acl_token_secret_id" "vault_storage_backend" {
@@ -188,7 +181,7 @@ data "consul_acl_token_secret_id" "vault_storage_backend" {
 
   depends_on = [
     libvirt_domain.consul-instance
-  ]  
+  ]
 }
 
 output "vault_storage_backend_token" {

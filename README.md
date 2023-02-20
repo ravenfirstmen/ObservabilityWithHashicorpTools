@@ -42,15 +42,32 @@ cd vault-scripts && ./unseal-vault.sh
 The `unseal-info.json` contains the unseals keys and the root token
 
 
+# /etc/hosts
+
+```
+192.168.150.10	consul		        consul.obs.local
+192.168.150.10	consul-node-0		consul-node-0.obs.local
+192.168.150.11	consul-node-1		consul-node-1.obs.local
+192.168.150.12	consul-node-2		consul-node-2.obs.local
+192.168.150.31	grafana		        grafana.obs.local
+192.168.150.34	keycloak		    keycloak.obs.local
+192.168.150.32	loki		        loki.obs.local
+192.168.150.33	mattermost		    mattermost.obs.local
+192.168.150.30	prometheus		    prometheus.obs.local
+192.168.150.20	vault	            vault.obs.local
+192.168.150.20	vault-node-0	    vault-node-0.obs.local
+192.168.150.21	vault-node-1		vault-node-1.obs.local
+192.168.150.22	vault-node-2		vault-node-2.obs.local
+
+```
+
 # Endpoints
 
-* Consul (Service Mesh): http://192.168.150.10:8500/
-* Vault (Vault service): https://192.168.150.20:8200/
-* Grafana (metrics & logs UI) -> http://192.168.150.101:3000/
-* Prometheus (Metrics) -> http://192.168.150.100:9090/
-* Prometheus Alertmanager (Metrics alerts) -> http://192.168.150.100:9093/
-* Loki (logs) -> http://192.168.150.102:3100/
-* Mattermost (Messaging platform - similar to Slack) -> http://192.168.150.103:8065/
-
-
-
+* Consul (Service Mesh): http://consul.obs.local:8500/
+* Vault (Vault service): https://vault.obs.local:8200/
+* Keycloak (OIDC provider): https://keycloak.obs.local:8443/
+* Grafana (metrics & logs UI) -> http://grafana.obs.local:3000/
+* Prometheus (Metrics) -> http://prometheus.obs.local:9090/
+* Prometheus Alertmanager (Metrics alerts) -> http://prometheus.obs.local:9093/
+* Loki (logs) -> http://loki.obs.local:3100/
+* Mattermost (Messaging platform - similar to Slack) -> http://mattermost.obs.local:8065/

@@ -30,8 +30,6 @@ disable_mlock = true
 cluster_addr = "https://$LOCAL_IPV4:8201"
 api_addr = "https://$LOCAL_IPV4:8200"
 
-%{~ if is_consul_backend_storage ~}
-
 storage "consul" {
   token = "${vault_storage_backend_token}"
   path = "${vault_kv_path}/"
@@ -48,7 +46,7 @@ service_registration "consul" {
   token = "${vault_storage_backend_token}"
   address = "${consul_cluster_end_point}"
   scheme = "https"
-  service = "${vault_kv_path}"
+  service = "vault"
   service_tags ="vault,vault-01"        
   tls_key_file = "/opt/vault/tls/vault-key.pem"
   tls_cert_file = "/opt/vault/tls/vault-cert.pem"
@@ -56,27 +54,6 @@ service_registration "consul" {
   tls_min_version = "tls12"
   tls_skip_verify = "false"        
 }
-
-%{~ else ~}
-
-storage "raft" {
-  path    = "/opt/vault/data"
-  node_id = "${node_name}"
-  
-  %{~ for ip in retry_join_ips ~}
-  %{~ if ip != current_node_ip ~}
-  retry_join {
-    leader_api_addr = "https://${ip}:8200"
-    leader_tls_servername = "${leader_tls_servername}"
-    leader_ca_cert_file = "/opt/vault/tls/vault-ca.pem"
-    leader_client_cert_file = "/opt/vault/tls/vault-cert.pem"
-    leader_client_key_file = "/opt/vault/tls/vault-key.pem"
-  }
-  %{~ endif ~}
-  %{~ endfor ~}
-}
-
-%{~ endif ~}
 
 listener "tcp" {
   address            = "0.0.0.0:8200"
@@ -92,6 +69,22 @@ listener "tcp" {
 telemetry {
   prometheus_retention_time = "30s"
   disable_hostname = true
+}
+
+seal "transit" {
+  address            = "https://${vault_cluster_end_point}:8200"
+  token              = "${vault_autounseal_token}"
+  disable_renewal    = "false"
+
+  // Key configuration
+  key_name           = "${vault_transit_key_name}"
+  mount_path         = "${vault_transit_mount_point}"
+
+  // TLS Configuration
+  tls_ca_cert        = "/opt/vault/tls/vault-ca.pem"
+  tls_client_cert    = "/opt/vault/tls/vault-cert.pem"
+  tls_client_key     = "/opt/vault/tls/vault-key.pem"
+  tls_skip_verify    = "true"
 }
 
 EOF

@@ -4,3 +4,4 @@
 **/*.pem
 **/unseal-info.json
 **/.idea
+**/vault-scripts/*.json

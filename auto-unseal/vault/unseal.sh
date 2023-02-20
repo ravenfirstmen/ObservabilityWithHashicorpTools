@@ -14,27 +14,18 @@ function unseal_vault {
     vault operator init -format=json > $UNSEAL_INFO_FILE
   fi
   
-  unseal_info=$(cat $UNSEAL_INFO_FILE)
-  unseal_threshold=$(echo $unseal_info | jq -r '.unseal_threshold')
+  # unseal_info=$(cat $UNSEAL_INFO_FILE)
+  # unseal_threshold=$(echo $unseal_info | jq -r '.unseal_threshold')
   
-  echo $unseal_info | jq -r '.unseal_keys_b64[]' | head -n $unseal_threshold | while read key;
-  do 
-    vault operator unseal $key
-  done
+  # echo $unseal_info | jq -r '.unseal_keys_b64[]' | head -n $unseal_threshold | while read key;
+  # do 
+  #   vault operator unseal $key
+  # done
 
   echo "Vault unsealed.... the unseal info IS in $UNSEAL_INFO_FILE file"  
 } 
 
 vault status 1>/dev/null
-
-# TODO: change to /v1/sys/health?!
-# 200 if initialized, unsealed, and active
-# 429 if unsealed and standby
-# 472 if disaster recovery mode replication secondary and active
-# 473 if performance standby
-# 501 if not initialized
-# 503 if sealed
-
 case $? in
 
   "0")

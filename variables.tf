@@ -59,6 +59,10 @@ variable "mattermost_volume_name" {
   default = "Ubuntu-20.04-LTS-With-Mattermost.qcow2"
 }
 
+variable "keycloak_volume_name" {
+  type    = string
+  default = "Ubuntu-20.04-LTS-With-KeyCloak.qcow2"
+}
 
 variable "datacenter_name" {
   type    = string
@@ -78,6 +82,6 @@ variable "acl_bootstrap_bool" {
 
 variable "is_consul_vault_backend" {
   type        = bool
-  default     = false
+  default     = true
   description = "True if consul is vault backend"
 }
