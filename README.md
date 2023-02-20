@@ -4,6 +4,7 @@ Observability local stack. Uses LibVirt/KVM to provide a local environment for l
 
 - Vault (Vault service)
 - Consul (Service mesh)
+- Keycloak (OIDC provider)
 - Prometheus (Metrics collector and aggregator)
 - Prometheus AlertManager (Alerts)
 - Loki (Logs collector & aggregator)
