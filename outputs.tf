@@ -1,6 +1,6 @@
 locals {
   non_consul_servers = { for s in [local.prometheus_server, local.grafana_server, local.loki_server, local.mattermost_server, local.keycloak_server] : s.name => s }
-  all_servers = merge(local.vault_servers, local.consul_servers, local.non_consul_servers)  
+  all_servers        = merge(local.vault_servers, local.consul_servers, local.non_consul_servers)
 }
 
 output "node-names" {
@@ -79,7 +79,7 @@ output "network_name" {
 }
 
 output "keycloak_password" {
-  value = random_password.keycloak_password.result
+  value     = random_password.keycloak_password.result
   sensitive = true
 }
 

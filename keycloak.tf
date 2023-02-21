@@ -2,8 +2,8 @@ resource "random_uuid" "keycloak_machine_id" {
 }
 
 resource "random_password" "keycloak_password" {
-  length           = 12
-  special          = false
+  length  = 12
+  special = false
 }
 
 data "template_cloudinit_config" "keycloak_config" {
@@ -51,9 +51,9 @@ EOT
     content = templatefile("${path.module}/cloud-init/keycloak/setup-keycloak.sh.tpl",
       {
         certificates_data = local.keycloak_certificates,
-        hostname = local.keycloak_server.fqdn
+        hostname          = local.keycloak_server.fqdn
     })
-  }  
+  }
 
   part {
     content_type = "text/x-shellscript-per-instance"

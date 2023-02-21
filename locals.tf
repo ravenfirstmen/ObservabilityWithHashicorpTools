@@ -83,13 +83,13 @@ locals {
 
 locals {
   first_consul_server_key  = "${var.consul_node_prefix}-0"
-  first_consul_server  = local.consul_servers[local.first_consul_server_key]
+  first_consul_server      = local.consul_servers[local.first_consul_server_key]
   consul_cluster_end_point = local.consul_servers[local.first_consul_server_key].ip
 }
 
 locals {
-  first_vault_server_key  = "${var.vault_node_prefix}-0"
-  first_vault_server  = local.vault_servers[local.first_vault_server_key]
+  first_vault_server_key = "${var.vault_node_prefix}-0"
+  first_vault_server     = local.vault_servers[local.first_vault_server_key]
 }
 
 locals {

@@ -12,12 +12,12 @@ resource "tls_cert_request" "keycloak_cluster_cert" {
   }
 
   dns_names = [
-      local.keycloak_server.fqdn,
-      "localhost"
-    ]
-  
+    local.keycloak_server.fqdn,
+    "localhost"
+  ]
+
   ip_addresses = ["127.0.0.1"]
-  
+
 }
 
 resource "tls_locally_signed_cert" "keycloak_cluster_server_signed_cert" {
