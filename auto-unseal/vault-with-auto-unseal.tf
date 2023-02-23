@@ -61,13 +61,15 @@ EOT
         vault_certificates_data = local.vault_certificates
 
         vault_storage_backend_token = data.consul_acl_token_secret_id.vault_autounseal_storage_backend.secret_id
-        vault_kv_path               = "vault-autounseal"
+        vault_consul_kv_path        = var.consul_kv_path
         consul_cluster_end_point    = "${var.consul_cluster_end_point}:8501"
 
         vault_cluster_end_point   = var.vault_cluster_end_point
         vault_autounseal_token    = var.vault_autounseal_token
         vault_transit_key_name    = var.vault_transit_key_name
         vault_transit_mount_point = var.vault_transit_mount_point
+
+        run_init_process = each.value.index == 0
     })
   }
 
@@ -142,33 +144,23 @@ resource "libvirt_volume" "vault_autounseal" {
   base_volume_name = var.vault_volume_name
 }
 
-# Consul backend
+
 resource "consul_acl_policy" "vault_autounseal_storage_backend" {
   name        = "vaul-auto-unseal-backend-policy"
   description = "Backend access policy for the vault unseal cluster"
   rules       = <<-RULE
-    {
-        "key_prefix": {
-            "vault_autounseal/": {
-            "policy": "write"
-            }
-        },
-        "service": {
-            "vault": {
-            "policy": "write"
-            }
-        },
-        "agent_prefix": {
-            "": {
-            "policy": "read"
-            }
-        },
-        "session_prefix": {
-            "": {
-            "policy": "write"
-            }
-        }
+    service "${var.consul_kv_path}" {
+      policy = "write"
     }
+    key_prefix "${var.consul_kv_path}/" {
+      policy = "write"
+    }
+    agent_prefix "${var.consul_kv_path}" {
+      policy = "read"
+    }
+    session_prefix "${var.consul_kv_path}" {
+      policy = "write"
+    }    
     RULE
   datacenters = [var.consul_datacenter_name]
 

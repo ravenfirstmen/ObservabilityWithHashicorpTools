@@ -82,6 +82,6 @@ variable "acl_bootstrap_bool" {
 
 variable "is_consul_vault_backend" {
   type        = bool
-  default     = true
+  default     = false
   description = "True if consul is vault backend"
 }

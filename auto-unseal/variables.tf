@@ -54,6 +54,11 @@ variable "consul_datacenter_name" {
   type = string
 }
 
+variable "consul_kv_path" {
+  type = string
+  default = "vault-cluster-auto-unseal"
+}
+
 variable "vault_node_prefix" {
   type    = string
   default = "vault-node-as"

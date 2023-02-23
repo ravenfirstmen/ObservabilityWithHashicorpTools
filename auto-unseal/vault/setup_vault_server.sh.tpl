@@ -32,27 +32,16 @@ api_addr = "https://$LOCAL_IPV4:8200"
 
 storage "consul" {
   token = "${vault_storage_backend_token}"
-  path = "${vault_kv_path}/"
+  path = "${vault_consul_kv_path}/"
   address = "${consul_cluster_end_point}"
   scheme = "https"
+  service = "vault"
+  service_tags ="vault,vault-01"   
   tls_key_file = "/opt/vault/tls/vault-key.pem"
   tls_cert_file = "/opt/vault/tls/vault-cert.pem"
   tls_ca_file = "/opt/vault/tls/vault-ca.pem"
   tls_min_version = "tls12"
   tls_skip_verify = "false"
-}
-
-service_registration "consul" {
-  token = "${vault_storage_backend_token}"
-  address = "${consul_cluster_end_point}"
-  scheme = "https"
-  service = "vault"
-  service_tags ="vault,vault-01"        
-  tls_key_file = "/opt/vault/tls/vault-key.pem"
-  tls_cert_file = "/opt/vault/tls/vault-cert.pem"
-  tls_ca_file = "/opt/vault/tls/vault-ca.pem"
-  tls_min_version = "tls12"
-  tls_skip_verify = "false"        
 }
 
 listener "tcp" {
@@ -101,3 +90,25 @@ cat <<PROFILE | sudo tee /etc/profile.d/vault.sh
 export VAULT_ADDR="https://127.0.0.1:8200"
 export VAULT_CACERT="/opt/vault/tls/vault-ca.pem"
 PROFILE
+
+%{~ if run_init_process ~}
+
+export VAULT_ADDR="https://127.0.0.1:8200"
+
+VAULT_INITIALIZED=$(curl -s $VAULT_ADDR/v1/sys/init | jq -r '.initialized')
+echo $VAULT_INITIALIZED
+if [ "$VAULT_INITIALIZED" = "false" ];
+then
+  echo "I'm NOT initialized!!!"
+  echo "Starting unseal..."
+  UNSEAL_INFO=$(curl -s --request POST $VAULT_ADDR/v1/sys/init --data '{ "stored_shares": 5, "recovery_shares": 5, "recovery_threshold": 3 }')
+  echo $UNSEAL_INFO > unseal-info.json
+  # VAULT_TOKEN=$(echo $UNSEAL_INFO | jq -r '.root_token')
+  # echo "Revoking $VAULT_TOKEN ..."
+  # curl -s --header "X-Vault-Token: $VAULT_TOKEN" --request POST $VAULT_ADDR/v1/auth/token/revoke-self
+  # echo "Done revoking $VAULT_TOKEN ..."
+else 
+  echo "I'm initialized!!!"
+fi
+
+%{~ endif ~}
