@@ -2,6 +2,7 @@
 **/.terraform*
 **/terraform.*
 **/*.pem
+**/*.der
 **/unseal-info.json
 **/.idea
-**/vault-scripts/*.json
+**/vault-scripts/**/*.json

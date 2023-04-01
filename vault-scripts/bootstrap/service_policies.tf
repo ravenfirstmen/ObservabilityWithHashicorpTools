@@ -21,3 +21,18 @@ path "${vault_aws_secret_backend.aws.path}/+/{{identity.entity.name}}" {
 }
 EOT
 }
+
+
+resource "vault_policy" "transit_policies" {
+  name = "transit-secret-policy"
+
+  policy = <<EOT
+path "${vault_mount.transit.path}/encrypt/${vault_transit_secret_backend_key.key.name}" {
+   capabilities = [ "update" ]
+}
+
+path "${vault_mount.transit.path}/decrypt/${vault_transit_secret_backend_key.key.name}" {
+   capabilities = [ "update" ]
+}
+EOT
+}

@@ -1,6 +1,6 @@
 resource "vault_identity_entity" "service_entity" {
   name     = var.service_name
-  policies = [var.service_kv_policy_name, var.service_aws_policy_name]
+  policies = [var.service_kv_policy_name, var.service_aws_policy_name, var.transit_policy_name]
   metadata = {
     service = var.service_name
     team    = var.service_name

@@ -40,6 +40,8 @@ integrations:
         replacement: os
       - target_label: role
         replacement: ${role}
+      - target_label: stamp
+        replacement: XYZ
 
 # LOGS SECTION
 
@@ -56,6 +58,7 @@ logs:
               job: varlogs
               role: ${role}
               machine: "#MACHINE#"
+              stamp: XYZ              
               __path__: /var/log/*log
     clients:
       - url: http://${loki_endpoint}:3100/loki/api/v1/push

@@ -11,6 +11,7 @@ module "antonio" {
   aws_secrets_path        = vault_aws_secret_backend.aws.path
   service_kv_policy_name  = vault_policy.kvv2_services_policy.name
   service_aws_policy_name = vault_policy.aws_policies.name
+  transit_policy_name     = vault_policy.transit_policies.name
 
   depends_on = [
     vault_auth_backend.services_approle,
@@ -64,6 +65,7 @@ module "salgado" {
   aws_secrets_path        = vault_aws_secret_backend.aws.path
   service_kv_policy_name  = vault_policy.kvv2_services_policy.name
   service_aws_policy_name = vault_policy.aws_policies.name
+  transit_policy_name     = vault_policy.transit_policies.name
 
   depends_on = [
     vault_auth_backend.services_approle,

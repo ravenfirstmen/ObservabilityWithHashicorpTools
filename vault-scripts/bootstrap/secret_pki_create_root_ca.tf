@@ -4,7 +4,7 @@ resource "vault_pki_secret_backend_root_cert" "root_ca" {
   backend              = vault_mount.pki.path
   type                 = "internal"
   common_name          = "Root CA"
-  ttl                  = "315360000"
+  ttl                  = 60 * 60 * 24 * 30 * 365
   format               = "pem"
   private_key_format   = "der"
   key_type             = "rsa"
@@ -17,7 +17,8 @@ resource "vault_pki_secret_backend_root_cert" "root_ca" {
 resource "vault_pki_secret_backend_role" "client_certificates" {
   backend           = vault_mount.pki.path
   name              = "client_certificates"
-  ttl               = 3600
+  ttl               = 60 * 60 * 24 * 30
+  max_ttl           = 60 * 60 * 24 * 30
   allow_ip_sans     = true
   key_type          = "rsa"
   key_bits          = 4096

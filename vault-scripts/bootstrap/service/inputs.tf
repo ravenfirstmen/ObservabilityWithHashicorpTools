@@ -30,6 +30,10 @@ variable "service_aws_policy_name" {
   type = string
 }
 
+variable "transit_policy_name" {
+  type = string
+}
+
 variable "aws_secrets_path" {
   type = string
 }

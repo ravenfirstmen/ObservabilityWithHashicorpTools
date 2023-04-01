@@ -1,5 +1,5 @@
 provider "vault" {
-  address               = "https://vault.obs.local:8200"
+  address               = "https://192.168.150.20:8200"
   skip_tls_verify       = true
   max_lease_ttl_seconds = 600
   auth_login {

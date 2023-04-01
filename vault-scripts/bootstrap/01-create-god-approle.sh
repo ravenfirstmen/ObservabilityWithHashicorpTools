@@ -12,7 +12,7 @@ then
 fi
 
 export VAULT_ADDR=https://${first_vault_server}:8200
-export VAULT_CACERT=../certs/ca.pem
+export VAULT_CACERT=../../certs/ca.pem
 export VAULT_TOKEN=$(cat $UNSEAL_INFO_FILE | jq -r '.root_token')
 
 APP_ROLE_NAME="approle"
@@ -53,7 +53,7 @@ provider "vault" {
   skip_tls_verify       = true
   max_lease_ttl_seconds = 600
   auth_login {
-    path   = "auth/${var.login_approle_path}/login"
+    path   = "auth/\${var.login_approle_path}/login"
     method = "approle"
 
     parameters = {
