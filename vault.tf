@@ -66,7 +66,12 @@ EOT
         retry_join_ips          = [for s in local.vault_servers : s.ip]
         vault_certificates_data = local.vault_certificates
 
-        is_consul_backend_storage   = var.is_consul_vault_backend
+        is_consul_backend_storage = var.is_consul_vault_backend
+        is_postgres_storage       = var.is_postgres_storage
+        is_integrated_storage     = var.is_integrated_storage
+        pg_password               = random_password.posgres_password.result
+        pg_server                 = local.postgres_server.ip
+
         vault_storage_backend_token = var.is_consul_vault_backend ? data.consul_acl_token_secret_id.vault_storage_backend[0].secret_id : null
         vault_kv_path               = local.vault_kv_path
         consul_cluster_end_point    = "${local.consul_cluster_end_point}:8501"

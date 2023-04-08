@@ -1,3 +1,10 @@
+provider "consul" {
+  address    = "${local.consul_cluster_end_point}:8500"
+  datacenter = var.datacenter_name
+  token      = random_uuid.consul_master_token.result
+}
+
+
 # consul secrets
 resource "random_uuid" "consul_master_token" {}
 resource "random_uuid" "consul_agent_server_token" {}
@@ -16,6 +23,13 @@ resource "random_uuid" "deployment_id" {
 resource "random_uuid" "consul_machine_id" {
   for_each = local.consul_servers
 }
+
+locals {
+  first_consul_server_key  = "${var.consul_node_prefix}-0"
+  first_consul_server      = local.consul_servers[local.first_consul_server_key]
+  consul_cluster_end_point = local.consul_servers[local.first_consul_server_key].ip
+}
+
 
 data "template_cloudinit_config" "consul_config" {
   for_each = local.consul_servers

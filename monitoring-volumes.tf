@@ -32,3 +32,12 @@ resource "libvirt_volume" "mattermost" {
   base_volume_pool = local.base_volume_pool
   base_volume_name = var.mattermost_volume_name
 }
+
+resource "libvirt_volume" "postgres" {
+  #   # workaround: depend on libvirt_ignition.ignition[each.key], otherwise the VM will use the old disk when the user-data changes
+  #   name           = "${each.value.name}-${md5(libvirt_ignition.worker_node_ignition[each.key].id)}.qcow2"
+  name             = local.postgres_server.volume
+  pool             = libvirt_pool.monitoring.name
+  base_volume_pool = local.base_volume_pool
+  base_volume_name = var.postgres_volume_name
+}

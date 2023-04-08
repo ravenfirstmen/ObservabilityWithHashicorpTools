@@ -1,5 +1,5 @@
 locals {
-  non_consul_servers = { for s in [local.prometheus_server, local.grafana_server, local.loki_server, local.mattermost_server, local.keycloak_server] : s.name => s }
+  non_consul_servers = { for s in [local.prometheus_server, local.grafana_server, local.loki_server, local.mattermost_server, local.keycloak_server, local.postgres_server] : s.name => s }
   all_servers        = merge(local.vault_servers, local.consul_servers, local.non_consul_servers)
 }
 
@@ -68,6 +68,14 @@ output "keyclock-info" {
   }
 }
 
+output "postgres-info" {
+  value = {
+    name    = local.postgres_server.name
+    address = local.postgres_server.ip
+  }
+}
+
+
 output "network_cidr" {
   value = var.network_cidr
 }
@@ -80,6 +88,11 @@ output "network_name" {
 
 output "keycloak_password" {
   value     = random_password.keycloak_password.result
+  sensitive = true
+}
+
+output "posgres_password" {
+  value     = random_password.posgres_password.result
   sensitive = true
 }
 

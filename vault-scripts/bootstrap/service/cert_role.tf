@@ -5,7 +5,7 @@ data "vault_auth_backend" "cert" {
 resource "vault_pki_secret_backend_cert" "cert" {
   backend = var.pki_path
   name    = var.pki_role
-  ttl = "10d"
+  ttl     = "10d"
 
   common_name = var.service_name
 }

@@ -46,7 +46,9 @@ storage "consul" {
   tls_skip_verify = "false"
 }
 
-%{~ else ~}
+%{~ endif ~}
+
+%{~ if is_integrated_storage ~}
 
 storage "raft" {
   path    = "/opt/vault/data"
@@ -63,6 +65,16 @@ storage "raft" {
   }
   %{~ endif ~}
   %{~ endfor ~}
+}
+%{~ endif ~}
+
+%{~ if is_postgres_storage ~}
+
+storage "postgresql" {
+  connection_url = "postgres://vault:${pg_password}@${pg_server}/vault?sslmode=prefer"
+  ha_enabled = "true"
+  table = "vault_kv_store"
+  ha_table = "vault_ha_locks"
 }
 
 %{~ endif ~}

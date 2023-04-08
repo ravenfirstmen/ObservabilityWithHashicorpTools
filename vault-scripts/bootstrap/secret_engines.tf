@@ -29,7 +29,7 @@ resource "vault_mount" "transit" {
 }
 
 resource "vault_transit_secret_backend_key" "key" {
-  backend = vault_mount.transit.path
-  name    = "enc-key"
+  backend          = vault_mount.transit.path
+  name             = "enc-key"
   deletion_allowed = true
 }

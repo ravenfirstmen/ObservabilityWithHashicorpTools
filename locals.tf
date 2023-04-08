@@ -79,12 +79,17 @@ locals {
     ssh_key   = tls_private_key.ssh.public_key_openssh
     index     = 1
   }
-}
 
-locals {
-  first_consul_server_key  = "${var.consul_node_prefix}-0"
-  first_consul_server      = local.consul_servers[local.first_consul_server_key]
-  consul_cluster_end_point = local.consul_servers[local.first_consul_server_key].ip
+  postgres_server = {
+    name      = "postgres"
+    fqdn      = "postgres.${var.network_domain}"
+    ip        = "${cidrhost(var.network_cidr, 35)}"
+    volume    = "postgres.qcow2"
+    cloudinit = "postgres-cloudinit.iso"
+    ssh_key   = tls_private_key.ssh.public_key_openssh
+    index     = 1
+  }
+
 }
 
 locals {

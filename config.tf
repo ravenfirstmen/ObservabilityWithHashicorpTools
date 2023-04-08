@@ -30,9 +30,4 @@ provider "libvirt" {
   uri = "qemu:///system"
 }
 
-provider "consul" {
-  address    = "${local.consul_cluster_end_point}:8500"
-  datacenter = var.datacenter_name
-  token      = random_uuid.consul_master_token.result
-}
 

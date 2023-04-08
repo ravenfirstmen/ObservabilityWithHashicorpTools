@@ -11,7 +11,7 @@ variable "network_domain" {
 
 variable "n_consul_nodes" {
   type    = number
-  default = 3
+  default = 1
 }
 
 variable "consul_node_prefix" {
@@ -64,6 +64,11 @@ variable "keycloak_volume_name" {
   default = "Ubuntu-20.04-LTS-With-KeyCloak.qcow2"
 }
 
+variable "postgres_volume_name" {
+  type    = string
+  default = "Ubuntu-20.04-LTS-With-Postgres.qcow2"
+}
+
 variable "datacenter_name" {
   type    = string
   default = "consul-dc1"
@@ -80,8 +85,20 @@ variable "acl_bootstrap_bool" {
   description = "Initial ACL Bootstrap configurations"
 }
 
+variable "is_integrated_storage" {
+  type        = bool
+  default     = false
+  description = "True to use integrated storage"
+}
+
 variable "is_consul_vault_backend" {
   type        = bool
-  default     = true
+  default     = false
   description = "True if consul is vault backend"
+}
+
+variable "is_postgres_storage" {
+  type        = bool
+  default     = true
+  description = "True if postgres is vault backend"
 }
