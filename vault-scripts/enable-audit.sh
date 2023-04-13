@@ -14,4 +14,4 @@ path "sys/audit"
 }
 EOF
 
-vault audit enable file file_path=/var/log/vault/vault-audit.log  
+vault audit enable file file_path=/var/log/vault/vault-audit.log mode="0644"

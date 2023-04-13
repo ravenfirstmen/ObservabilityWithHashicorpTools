@@ -93,5 +93,14 @@ logs:
               machine: "#MACHINE#"
               stamp: XYZ
               __path__: /var/log/*log
+      - job_name: vaultaudit
+        static_configs:
+          - targets: [localhost]
+            labels:
+              job: vaultaudit
+              role: ${role}
+              machine: "#MACHINE#"
+              stamp: XYZ
+              __path__: /var/log/vault/*.log
     clients:
       - url: http://${loki_endpoint}:3100/loki/api/v1/push
