@@ -20,6 +20,8 @@ integrations:
     enabled: true
   node_exporter:
     enabled: true
+    enable_collectors:
+      - ethtool
     # if we need to lower the number of samples and/or the cardinality set explicitly the collectors
     # set_collectors:
     #   - filesystem

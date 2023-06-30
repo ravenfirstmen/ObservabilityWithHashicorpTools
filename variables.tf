@@ -81,7 +81,7 @@ variable "consul_cluster_version" {
 
 variable "acl_bootstrap_bool" {
   type        = bool
-  default     = true
+  default     = false
   description = "Initial ACL Bootstrap configurations"
 }
 
